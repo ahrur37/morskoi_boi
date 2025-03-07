@@ -8,13 +8,13 @@ namespace morskoi_boi
         static char[,] boardBot = new char[10, 10];
         static char[,] boardHit = new char[10, 10];
         static char[,] boardIgrok = new char[10, 10];
-        static char currentPlayer = 'I';
-        static bool win = false;
+        // static char currentPlayer = 'I';
+        // static bool win = false;
         static Random rnd = new Random();
-        static int ships1 = 4;
-        static int ships2 = 3;
-        static int ships3 = 2;
-        static int ships4 = 1;
+        static int ships1 = 1; // 4
+        static int ships2 = 1; // 3
+        static int ships3 = 1; // 2
+        static int ships4 = 1; // 1
         static int x = 0;
         static int y = 0;
         #endregion
@@ -44,7 +44,7 @@ namespace morskoi_boi
                 y = rnd.Next(1, 9);
                 if (boardBot[x, y] == 'S' || boardBot[x, y] == 'N')
                 {
-                    i--; 
+                    i--;
                     continue;
                 }
                 boardBot[x, y] = 'S'; // одинарный
@@ -156,17 +156,17 @@ namespace morskoi_boi
                 }
             }
         }
-        public static void ZapolnenieIgrok()
-        {
-            Console.WriteLine($"Введите номер строчки на которую хотите поставить {currentPlayer}");
-            int stroc = int.Parse(Console.ReadLine());
-            Console.WriteLine($"Введите номер столбеца на который хотите поставить {currentPlayer}");
-            int stolb = int.Parse(Console.ReadLine());
-            if (boardIgrok[stroc - 1, stolb - 1] == '~')
-                boardIgrok[stroc - 1, stolb - 1] = currentPlayer;
-            else
-                Console.WriteLine("Нельзя поставить туда куда уже поставили");
-        }
+        //public static void ZapolnenieIgrok()
+        //{
+        //    Console.WriteLine($"Введите номер строчки на которую хотите поставить {currentPlayer}");
+        //    int stroc = int.Parse(Console.ReadLine());
+        //    Console.WriteLine($"Введите номер столбеца на который хотите поставить {currentPlayer}");
+        //    int stolb = int.Parse(Console.ReadLine());
+        //    if (boardIgrok[stroc - 1, stolb - 1] == '~')
+        //        boardIgrok[stroc - 1, stolb - 1] = currentPlayer;
+        //    else
+        //        Console.WriteLine("Нельзя поставить туда куда уже поставили");
+        //}
         public static void N()
         {
             if (x - 1 < 10 && x - 1 >= 0 && boardBot[x - 1, y] != 'S')
@@ -200,7 +200,7 @@ namespace morskoi_boi
                 Console.Write(" " + (i + 1) + probel);
                 for (int j = 0; j < 10; j++)
                     Console.Write(boardBot[j, i] + " ");
-                
+
                 Console.WriteLine();
             }
         }
