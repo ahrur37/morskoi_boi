@@ -11,11 +11,12 @@ namespace morskoi_boi
         static char currentPlayer = 'I';
         static bool win = false;
         static Random rnd = new Random();
-        static int ships1 = 3;
-        static int ships2 = 2;
+        static int ships1 = 4;
+        static int ships2 = 3;
         static int ships3 = 2;
         static int ships4 = 1;
-
+        static int x = 0;
+        static int y = 0;
         #endregion
         static void Main(string[] args)
         {
@@ -37,10 +38,10 @@ namespace morskoi_boi
         }
         public static void ZapolnenieBot()
         {
-            for (int i = 0; i < 8; i++) // 8 кораблей
+            for (int i = 0; i < 10; i++) // 10 кораблей
             {
-                int x = rnd.Next(1, 9);
-                int y = rnd.Next(1, 9);
+                x = rnd.Next(1, 9);
+                y = rnd.Next(1, 9);
                 if (boardBot[x, y] == 'S' || boardBot[x, y] == 'N')
                 {
                     i--; 
@@ -50,59 +51,72 @@ namespace morskoi_boi
                 int sboi = 1;
                 while (sboi == 1)
                 {
-                    if (i >= 3 && i <= 4) // двойной
+                    if (i > ships1) // одинарный
+                    {
+                        N();
+                        sboi = 0;
+                    }
+                    else if (i >= ships1 && i < ships2) // двойной
                     {
                         int v = rnd.Next(0, 3);
-                        if (v == 0 && y - 1 >= 0 && y - 1 <= 9)
+                        if (v == 0 && y - 1 >= 0 && y - 1 <= 9 && boardBot[x, y - 1] != 'N')
                         {
                             boardBot[x, y - 1] = 'S';
+                            N();
                             sboi = 0;
                         }
-                        else if (v == 1 && y + 1 >= 0 && y + 1 <= 9)
+                        else if (v == 1 && y + 1 >= 0 && y + 1 <= 9 && boardBot[x, y + 1] != 'N')
                         {
                             boardBot[x, y + 1] = 'S';
+                            N();
                             sboi = 0;
                         }
-                        else if (v == 2 && x - 1 >= 0 && x - 1 <= 9)
+                        else if (v == 2 && x - 1 >= 0 && x - 1 <= 9 && boardBot[x - 1, y] != 'N')
                         {
                             boardBot[x - 1, y] = 'S';
+                            N();
                             sboi = 0;
                         }
-                        else if (v == 3 && x + 1 >= 0 && x + 1 <= 9)
+                        else if (v == 3 && x + 1 >= 0 && x + 1 <= 9 && boardBot[x + 1, y] != 'N')
                         {
                             boardBot[x + 1, y] = 'S';
+                            N();
                             sboi = 0;
                         }
                     }
-                    else if (i >= 5 && i <= 6) // тройной
+                    else if (i >= ships2 && i < ships3) // тройной
                     {
                         int v = rnd.Next(0, 3);
                         if (v == 0 && y - 2 >= 0 && y - 2 <= 9)
                         {
                             boardBot[x, y - 1] = 'S';
                             boardBot[x, y - 2] = 'S';
+                            N();
                             sboi = 0;
                         }
                         else if (v == 1 && y + 2 >= 0 && y + 2 <= 9)
                         {
                             boardBot[x, y + 1] = 'S';
                             boardBot[x, y + 2] = 'S';
+                            N();
                             sboi = 0;
                         }
                         else if (v == 2 && x - 2 >= 0 && x - 2 <= 9)
                         {
-                            boardBot[x - 2, y] = 'S';
                             boardBot[x - 1, y] = 'S';
+                            boardBot[x - 2, y] = 'S';
+                            N();
                             sboi = 0;
                         }
                         else if (v == 3 && x + 2 >= 0 && x + 2 <= 9)
                         {
-                            boardBot[x + 2, y] = 'S';
                             boardBot[x + 1, y] = 'S';
+                            boardBot[x + 2, y] = 'S';
+                            N();
                             sboi = 0;
                         }
                     }
-                    else if (i == 7) // четверной
+                    else if (i >= ships3 && i < ships4) // четверной
                     {
                         int v = rnd.Next(0, 3);
                         if (v == 0 && y - 3 >= 0 && y - 3 <= 9)
@@ -110,27 +124,32 @@ namespace morskoi_boi
                             boardBot[x, y - 1] = 'S';
                             boardBot[x, y - 2] = 'S';
                             boardBot[x, y - 3] = 'S';
+                            N();
                             sboi = 0;
+
                         }
                         else if (v == 1 && y + 3 >= 0 && y + 3 <= 9)
                         {
                             boardBot[x, y + 1] = 'S';
                             boardBot[x, y + 2] = 'S';
                             boardBot[x, y + 3] = 'S';
+                            N();
                             sboi = 0;
                         }
                         else if (v == 2 && x - 3 >= 0 && x - 3 <= 9)
                         {
-                            boardBot[x - 2, y] = 'S';
                             boardBot[x - 1, y] = 'S';
+                            boardBot[x - 2, y] = 'S';
                             boardBot[x - 3, y] = 'S';
+                            N();
                             sboi = 0;
                         }
                         else if (v == 3 && x + 3 >= 0 && x + 3 <= 9)
                         {
-                            boardBot[x + 2, y] = 'S';
                             boardBot[x + 1, y] = 'S';
+                            boardBot[x + 2, y] = 'S';
                             boardBot[x + 3, y] = 'S';
+                            N();
                             sboi = 0;
                         }
                     }
@@ -147,6 +166,25 @@ namespace morskoi_boi
                 boardIgrok[stroc - 1, stolb - 1] = currentPlayer;
             else
                 Console.WriteLine("Нельзя поставить туда куда уже поставили");
+        }
+        public static void N()
+        {
+            if (x - 1 < 10 && x - 1 >= 0 && boardBot[x - 1, y] != 'S')
+                boardBot[x - 1, y] = 'N';
+            if (x + 1 < 10 && x + 1 >= 0 && boardBot[x + 1, y] != 'S')
+                boardBot[x + 1, y] = 'N';
+            if (y - 1 < 10 && y - 1 >= 0 && boardBot[x, y - 1] != 'S')
+                boardBot[x, y - 1] = 'N';
+            if (y + 1 < 10 && y + 1 >= 0 && boardBot[x, y + 1] != 'S')
+                boardBot[x, y + 1] = 'N';
+            if (x - 1 < 10 && x - 1 >= 0 && y + 1 < 10 && y + 1 >= 0 && boardBot[x - 1, y + 1] != 'S')
+                boardBot[x - 1, y + 1] = 'N';
+            if (x - 1 < 10 && x - 1 >= 0 && y - 1 < 10 && y - 1 >= 0 && boardBot[x - 1, y - 1] != 'S')
+                boardBot[x - 1, y - 1] = 'N';
+            if (x + 1 < 10 && x + 1 >= 0 && y - 1 < 10 && y - 1 >= 0 && boardBot[x + 1, y - 1] != 'S')
+                boardBot[x + 1, y - 1] = 'N';
+            if (x + 1 < 10 && x + 1 >= 0 && y + 1 < 10 && y + 1 >= 0 && boardBot[x + 1, y + 1] != 'S')
+                boardBot[x + 1, y + 1] = 'N';
         }
         static void PrintGrid() // Вывод поля на экран ЗАКОНЧЕНО
         {
