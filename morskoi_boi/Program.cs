@@ -72,19 +72,17 @@ namespace morskoi_boi
             {
                 Console.WriteLine("Текущее состояние вашего поля:");
                 PrintGrid(); 
+
                 Console.Write("Введите координаты(Пример - A1): ");
                 string input = Console.ReadLine().ToUpper();
                 if (input.Length < 2) 
                     continue;
-                char X = input[0];
-                ConvertCharToInt(X);
-                int y = int.Parse(input.Substring(1)) - 1;
-                int direction = 0;
-                if (size > 0)
-                {
-                    Console.Write("Введите направление (1 - вверх, 2 - вниз, 3 - вправо, 4 - влево): ");
-                    direction = Console.ReadLine().ToUpper()[0];
-                }
+                char Y = input[0];
+                ConvertCharToInt(Y);
+                int X = int.Parse(input.Substring(1)) - 1;
+
+                Console.Write("Введите направление (1 - вверх, 2 - вниз, 3 - вправо, 4 - влево): ");
+                int direction = int.Parse(Console.ReadLine());
                 if (CanPlaceShip(direction, size))
                 {
                     boardIgrok[x, y] = 'S';
@@ -129,18 +127,23 @@ namespace morskoi_boi
             {
                 int newX = x;
                 int newY = y;
-                if (direction == 1) 
+
+                if (direction == 1 && x - i >= 0)
                     newX = x - i;
-                else if (direction == 2) 
+                else if (direction == 2 && y + i < 10)
                     newY = y + i;
-                else if (direction == 3) 
+                else if (direction == 3 && x + i < 10)
                     newX = x + i;
-                else if (direction == 4) 
+                else if (direction == 4 && y - i >= 0)
                     newY = y - i; 
+                else 
+                    { return false; }
+
                 if (currentPlayer == 'B')
                     sim = boardBot[newX, newY];
                 else
                     sim = boardIgrok[newX, newY];
+
                 if (newX < 0 || newX >= 10 || newY < 0 || newY >= 10)
                 {
                     if (currentPlayer == 'B')
@@ -178,28 +181,28 @@ namespace morskoi_boi
                 }
             }
         }
-        public static void ConvertCharToInt(char X) // Завершено 
+        public static void ConvertCharToInt(char Y) // Завершено 
         {
-            if (X == 'A')
-                x = 0;
-            else if (X == 'B')
-                x = 1;
-            else if (X == 'C')
-                x = 2;
-            else if (X == 'D')
-                x = 3;
-            else if (X == 'E')
-                x = 4;
-            else if (X == 'F')
-                x = 5;
-            else if (X == 'G')
-                x = 6;
-            else if (X == 'H')
-                x = 7;
-            else if (X == 'I')
-                x = 8;
-            else if (X == 'J')
-                x = 9;
+            if (Y == 'A')
+                y = 0;
+            else if (Y == 'B')
+                y = 1;
+            else if (Y == 'C')
+                y = 2;
+            else if (Y == 'D')
+                y = 3;
+            else if (Y == 'E')
+                y = 4;
+            else if (Y == 'F')
+                y = 5;
+            else if (Y == 'G')
+                y = 6;
+            else if (Y == 'H')
+                y = 7;
+            else if (Y == 'I')
+                y = 8;
+            else if (Y == 'J')
+                y = 9;
         }
         static void PrintGrid() // Завершено 
         {
