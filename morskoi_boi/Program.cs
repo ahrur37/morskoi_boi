@@ -1,229 +1,531 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace morskoi_boi
 {
     internal class Program
     {
-        #region 
-        static char currentPlayer = ' ';
-        static char[,] boardBot = new char[10, 10]; 
-        static char[,] boardHit = new char[10, 10]; 
-        static char[,] boardIgrok = new char[10, 10]; 
-        static Random rnd = new Random();
-        static int ships1 = 4; 
-        static int ships2 = 3; 
-        static int ships3 = 2; 
-        static int ships4 = 1; 
-        static int x = 0;
-        static int y = 0;
-        #endregion
-
+        static MyKart p = new MyKart();
         static void Main(string[] args)
         {
-            InitializeBoard(); 
-            PrintGrid(); 
-        }
-        public static void InitializeBoard()
-        {
-            for (int i = 0; i < 10; i++)
+            Console.WriteLine("Введите свои корабли:");
+
+            AddBoatWithCheck("Введи координаты 4-х палубного. Пример: А1 Б1 В1 Г1", 4);
+            AddBoatWithCheck("Введи координаты 3-х палубного. Пример: А1 Б1 В1", 3);
+            AddBoatWithCheck("Введи координаты 3-х палубного. Пример: А1 Б1 В1", 3);
+            AddBoatWithCheck("Введи координаты 2-х палубного. Пример: А1 Б1", 2);
+            AddBoatWithCheck("Введи координаты 2-х палубного. Пример: А1 Б1", 2);
+            AddBoatWithCheck("Введи координаты 2-х палубного. Пример: А1 Б1", 2);
+            AddBoatWithCheck("Введи координаты 1-х палубного. Пример: А1", 1);
+            AddBoatWithCheck("Введи координаты 1-х палубного. Пример: А1", 1);
+            AddBoatWithCheck("Введи координаты 1-х палубного. Пример: А1", 1);
+            AddBoatWithCheck("Введи координаты 1-х палубного. Пример: А1", 1);
+
+            Bot bot = new Bot();
+            List<Boat> botboats = bot.botboat();
+
+            MyKart botkart = new MyKart();
+            foreach (Boat boat in botboats)
+                botkart.AddBoat(boat);
+
+            botkart.Print(false);
+            while (botkart.Alivefleet() && p.Alivefleet())
             {
-                for (int j = 0; j < 10; j++)
+                int fireresult = 1;
+                while (fireresult != 0 && botkart.Alivefleet())
                 {
-                    boardBot[i, j] = '~'; 
-                    boardIgrok[i, j] = '~'; 
-                }
-            }
-            currentPlayer = 'B';
-            ZapolnenieBot();
-            currentPlayer = 'I';
-            ZapolnenieIgrok1();
-        }
-        public static void ZapolnenieBot() // Завершено 
-        {
-            for (int i = 0; i < ships1; i++)
-                PlaceShip(1);
-            for (int i = 0; i < ships2; i++)
-                PlaceShip(2);
-            for (int i = 0; i < ships3; i++)
-                PlaceShip(3);
-            for (int i = 0; i < ships4; i++)
-                PlaceShip(4);
-        }
-        public static void ZapolnenieIgrok1()// Завершено 
-        {
-            for(int i = 0;i < ships1 + ships2 + ships3 + ships4; i++)
-            {
-                if (i < ships1)
-                    ZapolnenieIgrok2(1);
-                else if (i < ships1 + ships2)
-                    ZapolnenieIgrok2(2);
-                else if (i < ships1 + ships2 + ships3)
-                    ZapolnenieIgrok2(3);
-                else if (i < ships1 + ships2 + ships3 + ships4)
-                    ZapolnenieIgrok2(4);
-            }
-        } 
-        public static void ZapolnenieIgrok2(int size)
-        {
-            Console.WriteLine($"Разместите корабль (размер: {size})");
-            bool placed = false;
 
-            while (!placed)
-            {
-                Console.WriteLine("Текущее состояние вашего поля:");
-                PrintGrid(); 
+                    Console.WriteLine("Сделайте ход");
+                    string hod = Console.ReadLine();
+                    fireresult = botkart.Fire(hod);
 
-                Console.Write("Введите координаты(Пример - A1): ");
-                string input = Console.ReadLine().ToUpper();
-                if (input.Length < 2) 
-                    continue;
-                char Y = input[0];
-                ConvertCharToInt(Y);
-                int X = int.Parse(input.Substring(1)) - 1;
-
-                Console.Write("Введите направление (1 - вверх, 2 - вниз, 3 - вправо, 4 - влево): ");
-                int direction = int.Parse(Console.ReadLine());
-                if (CanPlaceShip(direction, size))
-                {
-                    boardIgrok[x, y] = 'S';
-                    N(direction, size);
-                    placed = true;
-                }
-                else
-                    Console.WriteLine("Невозможно разместить корабль здесь. Попробуйте снова.");
-            }
-        }
-        public static void PlaceShip(int size)
-        {
-            bool placed = false;
-            while (!placed)
-            {
-                x = rnd.Next(0, 10);
-                y = rnd.Next(0, 10);
-                int direction = rnd.Next(1, 4); 
-
-                if (CanPlaceShip(direction, size))
-                {
-                    for (int i = 0; i < size; i++)
+                    if (fireresult == 1)
                     {
-                        if (direction == 1) 
-                            boardBot[x - i, y] = 'S'; 
-                        else if (direction == 2) 
-                            boardBot[x, y + i] = 'S'; 
-                        else if (direction == 3) 
-                            boardBot[x + i, y] = 'S'; 
-                        else if (direction == 4) 
-                            boardBot[x, y - i] = 'S'; 
+                        Console.WriteLine("Вы попали");
+
                     }
-                    placed = true;
-                    N(direction, size); 
+                    else if (fireresult == 0)
+                    {
+                        Console.WriteLine("мимо");
+                    }
+                    else if (fireresult == -1)
+                    {
+                        Console.WriteLine("Вы потапили");
+
+                    }
+                    botkart.Print(false);
                 }
+
+                int botFireResult = 1;
+                while (botFireResult != 0 && p.Alivefleet())
+                {
+                    Console.WriteLine("Соперник делает ход");
+                    botFireResult = p.Fire(bot.hod());
+                    if (botFireResult == 1)
+                    {
+                        Console.WriteLine("В вас попали");
+                    }
+                    else if (botFireResult == 0)
+                    {
+                        Console.WriteLine("мимо");
+                    }
+                    else if (botFireResult == -1)
+                    {
+                        Console.WriteLine("Вы потеряли корабль");
+
+                    }
+                    p.Print(true);
+
+                }
+            }
+
+
+            if (botkart.Alivefleet())
+            {
+                Console.WriteLine("Победил соперник");
+                Console.ReadKey();
+            }
+            if (p.Alivefleet())
+            {
+                Console.WriteLine("Вы победили!");
+                Console.ReadKey();
             }
         }
-        public static bool CanPlaceShip(int direction, int size)
+        static void AddBoatWithCheck(string prompt, int expectedLength)
         {
-            char sim = ' ';
-            for (int i = 0; i < size; i++)
+            while (true)
             {
-                int newX = x;
-                int newY = y;
+                Console.WriteLine(prompt);
+                string input = Console.ReadLine().ToUpper();
+                string[] coords = input.Split(' ');
 
-                if (direction == 1 && x - i >= 0)
-                    newX = x - i;
-                else if (direction == 2 && y + i < 10)
-                    newY = y + i;
-                else if (direction == 3 && x + i < 10)
-                    newX = x + i;
-                else if (direction == 4 && y - i >= 0)
-                    newY = y - i; 
-                else 
-                    { return false; }
-
-                if (currentPlayer == 'B')
-                    sim = boardBot[newX, newY];
-                else
-                    sim = boardIgrok[newX, newY];
-
-                if (newX < 0 || newX >= 10 || newY < 0 || newY >= 10)
+                if (coords.Length != expectedLength)
                 {
-                    if (currentPlayer == 'B')
-                        if (boardBot[newX, newY] != '~')
-                            return false;
-                    if (currentPlayer != 'B')
-                        if (boardIgrok[newX, newY] != '~')
-                            return false;
+                    Console.WriteLine($"Неверное количество координат. Ожидается {expectedLength}.");
+                    continue;
                 }
+
+                Boat boat = new Boat(coords);
+                if (p.AddBoat(boat))
+                {
+                    p.Print(true);
+                    break;
+                }
+                else
+                    Console.WriteLine("Нельзя разместить корабль здесь или рядом с другим кораблем");
             }
+        }
+    }
+    internal class MyKart
+    {
+        Dictionary<string, bool> history = new Dictionary<string, bool>();
+        List<Boat> myBoats;
+        public MyKart()
+        {
+            myBoats = new List<Boat>();
+        }
+        public bool AddBoat(Boat boat)
+        {
+
+            if (!IsValidPlacement(boat))
+            {
+                return false;
+            }
+
+            myBoats.Add(boat);
             return true;
         }
-        public static void N(int direction, int size) // Завершено 
+        private bool IsValidPlacement(Boat newBoat)
         {
-            for (int i = 0; i < size; i++)
+
+            HashSet<string> forbiddenCells = new HashSet<string>();
+
+            foreach (Boat existingBoat in myBoats)
             {
-                int newX = x;
-                int newY = y;
-
-                if (direction == 1) newX = x - i; 
-                else if (direction == 2) newY = y + i; 
-                else if (direction == 3) newX = x + i;
-                else if (direction == 4) newY = y - i; 
-
-                for (int dx = -1; dx <= 1; dx++)
+                foreach (string cell in existingBoat.Cord())
                 {
-                    for (int dy = -1; dy <= 1; dy++)
-                    {
-                        int nx = newX + dx;
-                        int ny = newY + dy;
 
-                        if (nx >= 0 && nx < 10 && ny >= 0 && ny < 10 && boardBot[nx, ny] == '~')
-                            boardBot[nx, ny] = 'N'; 
+                    AddCellAndNeighbors(forbiddenCells, cell);
+                }
+            }
+
+
+            foreach (string newCell in newBoat.Cord())
+            {
+                if (forbiddenCells.Contains(newCell))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        private void AddCellAndNeighbors(HashSet<string> forbiddenCells, string cell)
+        {
+            Dictionary<string, int> cord = new Dictionary<string, int>
+            {
+                {"А", 0}, {"Б", 1}, {"В", 2}, {"Г", 3}, {"Д", 4},
+                {"Е", 5}, {"Ж", 6}, {"З", 7}, {"И", 8}, {"К", 9}
+            };
+
+
+            string letter = cell.Substring(0, 1);
+            int number;
+            if (cell.Length == 2)
+            {
+                number = int.Parse(cell.Substring(1, 1));
+            }
+            else
+            {
+                number = int.Parse(cell.Substring(1, 2));
+            }
+
+
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    int newNumber = number + i;
+                    int letterIndex = cord[letter] + j;
+
+
+                    if (newNumber >= 1 && newNumber <= 10 && letterIndex >= 0 && letterIndex < 10)
+                    {
+                        string newLetter = cord.FirstOrDefault(x => x.Value == letterIndex).Key;
+                        string newCell = newLetter + newNumber;
+                        forbiddenCells.Add(newCell);
                     }
                 }
             }
         }
-        public static void ConvertCharToInt(char Y) // Завершено 
+        private string Getkey(Dictionary<string, int> cord, int value)
         {
-            if (Y == 'A')
-                y = 0;
-            else if (Y == 'B')
-                y = 1;
-            else if (Y == 'C')
-                y = 2;
-            else if (Y == 'D')
-                y = 3;
-            else if (Y == 'E')
-                y = 4;
-            else if (Y == 'F')
-                y = 5;
-            else if (Y == 'G')
-                y = 6;
-            else if (Y == 'H')
-                y = 7;
-            else if (Y == 'I')
-                y = 8;
-            else if (Y == 'J')
-                y = 9;
-        }
-        static void PrintGrid() // Завершено 
-        {
-            string probel = "  ";
-            Console.WriteLine("   A B C D E F G H I J     A B C D E F G H I J");
-            for (int i = 0; i < 10; i++)
+            foreach (var pair in cord)
             {
-                if (i == 9)
-                    probel = " ";
-                Console.Write((i + 1) + probel);
-                for (int j = 0; j < 10; j++)
+                if (pair.Value == value)
                 {
-                    Console.Write(boardIgrok[i, j] + " "); // Поле игрока
+                    return pair.Key;
                 }
-                Console.Write(" " + (i + 1) + probel);
-                for (int j = 0; j < 10; j++)
+            }
+            return " ";
+        }
+        public void Print(bool showboat)
+        {
+            string[,] Karta = new string[10, 10];
+            Dictionary<string, int> cord = new Dictionary<string, int>
+            {
+                {"А", 0}, {"Б", 1}, {"В", 2}, {"Г", 3}, {"Д", 4},
+                {"Е", 5}, {"Ж", 6}, {"З", 7}, {"И", 8}, {"К", 9}
+            };
+
+            for (int s = 0; s < 10; s++)
+            {
+                for (int k = 0; k < 10; k++)
                 {
-                    Console.Write(boardBot[i, j] + " "); // Поле бота
+                    Karta[s, k] = "-";
+                    if (showboat)
+                    {
+                        foreach (Boat boat in myBoats)
+                        {
+                            string[] acord = boat.Cord();
+                            for (int n = 0; n < acord.Length; n++)
+                            {
+                                string bykva = acord[n].Substring(0, 1);
+                                int colindex = cord[bykva];
+                                int stroka;
+                                if (acord[n].Length == 2)
+                                {
+                                    stroka = Int32.Parse(acord[n].Substring(1, 1)) - 1;
+                                }
+                                else
+                                {
+                                    stroka = Int32.Parse(acord[n].Substring(1, 2)) - 1;
+                                }
+                                if (s == stroka && colindex == k)
+                                {
+                                    Karta[s, k] = "#";
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    string kartcord = Getkey(cord, k) + (s + 1);
+                    if (history.ContainsKey(kartcord))
+                    {
+                        if (history[kartcord])
+                        {
+                            Karta[s, k] = "x";
+                        }
+                        else
+                            Karta[s, k] = "*";
+                    }
+                }
+            }
+
+            Console.WriteLine("   А Б В Г Д Е Ж З И К");
+            for (int s = 0; s < 10; s++)
+            {
+                if (s < 9)
+                {
+                    Console.Write(" ");
+                }
+                Console.Write(s + 1 + " ");
+
+                for (int k = 0; k < 10; k++)
+                {
+                    Console.Write(Karta[s, k] + " ");
                 }
                 Console.WriteLine();
             }
+        }
+        public int Fire(string firecord)
+        {
+            foreach (Boat boat in myBoats)
+            {
+                string[] cordboat = boat.Cord();
+                for (int i = 0; i < cordboat.Length; i++)
+                {
+                    if (firecord == cordboat[i])
+                    {
+                        history.Add(firecord, true);
+                        int lifeboat = boat.Damage();
+                        if (lifeboat > 0)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return -1;
+                        }
+                    }
+                }
+            }
+            history.Add(firecord, false);
+            return 0;
+        }
+        public bool Alivefleet()
+        {
+            foreach (Boat boat in myBoats)
+            {
+                if (boat.IsAlive())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+    internal class Bot
+    {
+        List<string> historybot = new List<string>();
+        char[] bykv = new char[] { 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К' };
+        public List<Boat> botboat()
+        {
+
+            List<Boat> boats = new List<Boat>();
+            boats.Add(createboat(4));
+            Boat boat3_1 = createboat(3);
+            while (intersec(boat3_1, boats))
+            {
+                boat3_1 = createboat(3);
+            }
+            boats.Add(boat3_1);
+            Boat boat3_2 = createboat(3);
+            while (intersec(boat3_2, boats))
+            {
+                boat3_2 = createboat(3);
+            }
+            boats.Add(boat3_2);
+            Boat boat2_1 = createboat(2);
+            while (intersec(boat2_1, boats))
+            {
+                boat2_1 = createboat(2);
+            }
+            boats.Add(boat2_1);
+
+            Boat boat2_2 = createboat(2);
+            while (intersec(boat2_2, boats))
+            {
+                boat2_2 = createboat(2);
+            }
+            boats.Add(boat2_2);
+
+            Boat boat2_3 = createboat(2);
+            while (intersec(boat2_3, boats))
+            {
+                boat2_3 = createboat(2);
+            }
+            boats.Add(boat2_3);
+
+            Boat boat1_1 = createboat(1);
+            while (intersec(boat1_1, boats))
+            {
+                boat1_1 = createboat(1);
+            }
+            boats.Add(boat1_1);
+
+            Boat boat1_2 = createboat(1);
+            while (intersec(boat1_2, boats))
+            {
+                boat1_2 = createboat(1);
+            }
+            boats.Add(boat1_2);
+
+            Boat boat1_3 = createboat(1);
+            while (intersec(boat1_3, boats))
+            {
+                boat1_3 = createboat(1);
+            }
+            boats.Add(boat1_3);
+
+            Boat boat1_4 = createboat(1);
+            while (intersec(boat1_4, boats))
+            {
+                boat1_4 = createboat(1);
+            }
+            boats.Add(boat1_4);
+            return boats;
+        }
+        private char compass(string startcoordinat, int size)
+        {
+
+            List<char> nesw = new List<char>();
+            int n_endcoordinat = Int32.Parse(startcoordinat.Substring(1)) - (size - 1);
+            if (n_endcoordinat >= 1)
+            {
+                nesw.Add('n');
+            }
+            int s_endcoordinat = Int32.Parse(startcoordinat.Substring(1)) + (size - 1);
+            if (s_endcoordinat <= 10)
+            {
+                nesw.Add('s');
+            }
+            int e_endcoordinat = Array.IndexOf(bykv, startcoordinat.Substring(0, 1)[0]) + (size - 1);
+            if (e_endcoordinat < bykv.Length)
+            {
+                nesw.Add('e');
+            }
+            int w_endcoordinat = Array.IndexOf(bykv, startcoordinat.Substring(0, 1)[0]) - (size - 1);
+            if (w_endcoordinat >= 0)
+            {
+                nesw.Add('w');
+            }
+            Random rand = new Random();
+            int randomindex = rand.Next(0, nesw.Count);
+            return nesw[randomindex];
+
+        }
+        private Boat createboat(int size)
+        {
+            string[] coordinat = new string[size];
+
+
+            Random random = new Random();
+            int chislo = random.Next(1, 10);
+
+            int randomindex = random.Next(0, 9);
+            char randomChar = bykv[randomindex];
+
+
+
+            string startcoordinat = "" + randomChar + chislo;
+            coordinat[0] = startcoordinat;
+            if (size > 1)
+            {
+                char naprav = compass(startcoordinat, size);
+
+                switch (naprav)
+                {
+                    case 'n':
+                        for (int i = 1; i < coordinat.Length; i++)
+                        {
+                            coordinat[i] = "" + randomChar + (chislo - i);
+
+                        }
+                        break;
+                    case 'e':
+                        for (int i = 1; i < coordinat.Length; i++)
+                        {
+                            coordinat[i] = "" + bykv[randomindex + i] + chislo;
+                        }
+                        break;
+                    case 's':
+                        for (int i = 1; i < coordinat.Length; i++)
+                        {
+                            coordinat[i] = "" + randomChar + (chislo + i);
+                        }
+                        break;
+                    case 'w':
+                        for (int i = 1; i < coordinat.Length; i++)
+                        {
+                            coordinat[i] = "" + bykv[randomindex - i] + chislo;
+                        }
+                        break;
+                }
+            }
+
+            Boat randboat = new Boat(coordinat);
+
+            return randboat;
+        }
+        private bool intersec(Boat boat, List<Boat> boats)
+        {
+            foreach (Boat boat2 in boats)
+            {
+                for (int i = 0; i < boat.Cord().Length; i++)
+
+                {
+                    for (int j = 0; j < boat2.Cord().Length; j++)
+                    {
+                        if (boat.Cord()[i] == boat2.Cord()[j])
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+
+        }
+        public string hod()
+        {
+            string hod = " ";
+            while (hod == " " || historybot.Contains(hod))
+            {
+                Random random = new Random();
+                int chislo = random.Next(0, 9);
+
+                int randomindex = random.Next(0, 9);
+                char randomChar = bykv[randomindex];
+                hod = "" + randomChar + chislo;
+
+            }
+
+            historybot.Add(hod);
+            return hod;
+        }
+    }
+    internal class Boat
+    {
+        string[] coordinat;
+        int life;
+        public Boat(string[] coordinatboat)
+        {
+            coordinat = coordinatboat;
+            life = coordinat.Length;
+        }
+        public string[] Cord()
+        { return coordinat; }
+        public int Damage()
+        { life--; return life; }
+        public bool IsAlive()
+        {
+            if (life > 0)
+                return true;
+            else
+                return false;
         }
     }
 }
