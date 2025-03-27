@@ -165,8 +165,8 @@ namespace morskoi_boi
         {
             Dictionary<string, int> cord = new Dictionary<string, int>
             {
-                {"А", 0}, {"Б", 1}, {"В", 2}, {"Г", 3}, {"Д", 4},
-                {"Е", 5}, {"Ж", 6}, {"З", 7}, {"И", 8}, {"К", 9}
+                {"A", 0}, {"B", 1}, {"C", 2}, {"D", 3}, {"E", 4},
+                {"F", 5}, {"G", 6}, {"H", 7}, {"I", 8}, {"J", 9}
             };
 
 
@@ -215,8 +215,8 @@ namespace morskoi_boi
             string[,] Karta = new string[10, 10];
             Dictionary<string, int> cord = new Dictionary<string, int>
             {
-                {"А", 0}, {"Б", 1}, {"В", 2}, {"Г", 3}, {"Д", 4},
-                {"Е", 5}, {"Ж", 6}, {"З", 7}, {"И", 8}, {"К", 9}
+                {"A", 0}, {"B", 1}, {"C", 2}, {"D", 3}, {"E", 4},
+                {"F", 5}, {"G", 6}, {"H", 7}, {"I", 8}, {"J", 9}
             };
 
             for (int s = 0; s < 10; s++)
@@ -236,15 +236,15 @@ namespace morskoi_boi
                                 int stroka;
                                 if (acord[n].Length == 2)
                                 {
-                                    stroka = Int32.Parse(acord[n].Substring(1, 1)) - 1;
+                                    stroka = int.Parse(acord[n].Substring(1, 1)) - 1;
                                 }
                                 else
                                 {
-                                    stroka = Int32.Parse(acord[n].Substring(1, 2)) - 1;
+                                    stroka = int.Parse(acord[n].Substring(1, 2)) - 1;
                                 }
                                 if (s == stroka && colindex == k)
                                 {
-                                    Karta[s, k] = "#";
+                                    Karta[s, k] = "S";
                                     break;
                                 }
                             }
@@ -264,7 +264,7 @@ namespace morskoi_boi
                 }
             }
 
-            Console.WriteLine("   А Б В Г Д Е Ж З И К");
+            Console.WriteLine("   A B C D E F G H I J");
             for (int s = 0; s < 10; s++)
             {
                 if (s < 9)
@@ -320,7 +320,7 @@ namespace morskoi_boi
     internal class Bot
     {
         List<string> historybot = new List<string>();
-        char[] bykv = new char[] { 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К' };
+        char[] bykv = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' };
         public List<Boat> botboat()
         {
 
